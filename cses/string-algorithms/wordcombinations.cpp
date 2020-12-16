@@ -7,6 +7,11 @@
 using namespace std;
 ul m = 1e9+7;
 
+#define aloop(a, b) for (auto &a: b)
+#define rloop(a, b, i) for (int i = a; i < b; i++)
+#define forward(a, i) for (int i = 0; i < a; i++)
+#define backward(b, i) for (int i = b; i >= 0; i--)
+
 template <typename T> void print(T s) {
 	cout << s << endl;
 }
@@ -34,41 +39,114 @@ template <typename T> T abs(T n) {
 	return n < 0? n * -1 : n; 
 }
 
-// faster dp method
+template<int MX> struct Trie {
+    int nex[MX][26], num = 0; // num is last node in trie
+    bool en[MX];
+    // change 2 to 26 for lowercase letters
+    
+    void ins(string x) {
+        int cur = 0;
+        aloop(t,x) {
+            if (!nex[cur][t-'a']) {
+            	nex[cur][t-'a'] = ++num;
+            	// print(cur, num);
+            }
+            // print("value is ", nex[cur][t-'a']);
+            cur = nex[cur][t-'a'];
+        }
+        en[cur] = 1;
+    }
+};
+
+
+Trie<1000009> T;
 
 int main() {
-	// solve using recursion
-	ul n;
-	string lf, news;
-	cin >> lf;
-	cin >> n;
-	unordered_set<string> s;
-	unordered_set<ul> key_length;
-	while (n--) {
-		cin >> news;
-		key_length.insert(news.size()); // iterate through key lengths 
-		s.insert(news);
+	string make;
+	cin >> make;
+	string s;
+	ul k;
+	cin >> k;
+	forward(k, i) {
+		cin >> s;
+		T.ins(s);
 	}
-	// printS(s);
-	string current;
-	vector<ul> v(lf.size()+1);
-	v[0] = 1;
-	unordered_set<string>::iterator it;
-	for (ul i = 1; i < lf.size()+1; i++) {
-		for (const ul &j: key_length) {
-			if (j <= i) {
-				// print(i-j, j);
-				current = lf.substr(i-j, j);
-				it = s.find(current);
-				if (it != s.end()) {
-					v[i] += v[i-j];
-					v[i]%= m;
+	vector<ul> ret(1000002);
+	ret[0] = 1;
+
+
+	// for (int j = 0; j < 10; j++) {
+	// 	for (const auto & i: T.nex[j]) {
+	// 		cout << i << " ";
+	// 	}
+	// 	cout << endl;
+	// }
+
+	forward(make.size(), i) {
+		ul start = 0;
+		for (int j = i; j < make.size(); j++) {
+			ul index = T.nex[start][make[j] -'a'];
+			// print(index, make[j]);
+			if (index != 0) {
+				if (T.en[index] != 0) {
+					ret[j+1] += ret[i];
+					// print(ret[j], ret[i]);
+					ret[j+1] %= m;
 				}
+				start = index;
+			} else {
+				break;
 			}
+			// cout << j << endl;
 		}
 	}
-	cout << v[lf.size()] << endl;
+	// printV(ret);
+	cout << ret[make.size()] << endl;
+	// printV(ret);
+
+	// for (int j = 0; j < 10; j++) {
+	// 	cout << T.en[j] << " ";
+	// }
+	// cout << endl;
+
+	
 }
+
+// faster dp method
+// but still not fast enough for all cases
+// int main() {
+// 	// solve using recursion
+// 	ul n;
+// 	string lf, news;
+// 	cin >> lf;
+// 	cin >> n;
+// 	unordered_set<string> s;
+// 	unordered_set<ul> key_length;
+// 	while (n--) {
+// 		cin >> news;
+// 		key_length.insert(news.size()); // iterate through key lengths 
+// 		s.insert(news);
+// 	}
+// 	// printS(s);
+// 	string current;
+// 	vector<ul> v(lf.size()+1);
+// 	v[0] = 1;
+// 	unordered_set<string>::iterator it;
+// 	for (ul i = 1; i < lf.size()+1; i++) {
+// 		for (const ul &j: key_length) {
+// 			if (j <= i) {
+// 				// print(i-j, j);
+// 				current = lf.substr(i-j, j);
+// 				it = s.find(current);
+// 				if (it != s.end()) {
+// 					v[i] += v[i-j];
+// 					v[i]%= m;
+// 				}
+// 			}
+// 		}
+// 	}
+// 	cout << v[lf.size()] << endl;
+// }
 
 
 // // takes way too long
