@@ -42,40 +42,60 @@ template <typename T> T abs(T n) {
 	return n < 0? n * -1 : n; 
 }
 
+
+bitset<100001> b;
+// more optimized bitset solution
 int main() {
 	ul n, x;
 	cin >> n;
-	// upperbound value
-	ul total = 0;
-	vector<ul>v;
+	b[0] = 1;
 	forward(n, i) {
 		cin >> x;
-		total += x;
-		v.push_back(x);
+		b = (b << x) | b ; // shift by x bits
 	}
-	vector<ul> dp(total+1);
-	dp[0] = 1;
-	ul max = 0;
-	forward(n, i) {
-		backward(v[i] + max + 1, j) {
-			if (j >= v[i]) {
-				dp[j] += dp[j-v[i]];
-			}
-		}
-		// printV(dp);
-		max += v[i];
-	}
-	// printV(dp);
-	vector<ul> ret;
-	forward(total + 1, i) {
-		if (i == 0) {continue;}
-		if (dp[i] != 0) {
-			ret.push_back(i);
+	cout << b.count()-1 << endl;
+	rloop(1, 100001, i) {
+		if (b[i]) {
+			cout << i << " ";
 		}
 	}
-	cout << ret.size() << endl;
-	printV(ret);
+	cout << endl;
 }
+
+// int main() {
+// 	ul n, x;
+// 	cin >> n;
+// 	// upperbound value
+// 	ul total = 0;
+// 	vector<ul>v;
+// 	forward(n, i) {
+// 		cin >> x;
+// 		total += x;
+// 		v.push_back(x);
+// 	}
+// 	vector<ul> dp(total+1);
+// 	dp[0] = 1;
+// 	ul max = 0;
+// 	forward(n, i) {
+// 		backward(v[i] + max + 1, j) {
+// 			if (j >= v[i]) {
+// 				dp[j] += dp[j-v[i]];
+// 			}
+// 		}
+// 		// printV(dp);
+// 		max += v[i];
+// 	}
+// 	// printV(dp);
+// 	vector<ul> ret;
+// 	forward(total + 1, i) {
+// 		if (i == 0) {continue;}
+// 		if (dp[i] != 0) {
+// 			ret.push_back(i);
+// 		}
+// 	}
+// 	cout << ret.size() << endl;
+// 	printV(ret);
+// }
 
 
 // this cannot handle the case
