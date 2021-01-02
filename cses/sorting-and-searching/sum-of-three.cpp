@@ -81,8 +81,14 @@ int main() {
 	sl n, x, r, diff;
 	cin >> n >> x;
 	vector<sl> v;
+	// OBSERVATION:
+	// unordered map does not work in ONE of the test cases
+	// this test case results in 'IMPOSSIBLE' as the solution
+	// on average, unordered_map is faster, but in one of the test cases
+	// map is much faster
 	map<sl, int> d; // map works
-	// unordered map does not work
+	// unordered_map<sl, int> d;
+
 	forward(n, i) {
 		cin >> r;
 		v.push_back(r);
