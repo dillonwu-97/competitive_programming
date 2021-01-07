@@ -80,6 +80,7 @@ bool p2(ul x)
 }
 
 /********************* Segment Tree *************************/
+// FOR THIS IMPLEMENTATION, FIRST ELEMENT STARTS AT INDEX 1
 template<sl size> struct segTree {
 	sl t[4* size];
 	segTree() {
@@ -146,48 +147,124 @@ template<sl size> struct segTree {
 
 };
 
-/********************* Main method *********************/
+/********************* Seg Tree Iterative *********************/
+// https://codeforces.com/blog/entry/18051
+// implementation of segment tree iterative, modified for min queries
+template<sl n> struct segTreeIterative {
+	sl t[2 * n];
 
-int main() {
-	sl n, x, r, c, flag;
-	cin >> n >> x;
-	sl array[n+1];
-	memset(array, 0, sizeof array);
-	forward(n, i) {
-		cin >> array[i+1];
+	segTreeIterative() {
+		memset(t, 0, sizeof t);
 	}
 
-	// for (const sl i: array) {
-	// 	cout << i << endl;
-	// }
+	sl combine (sl a, sl b) {
+		return min(a, b);
+	}
 
-	segTree<100000> tree;
-	tree.build (array, 1, 1, n);
-	sl temp;
-	// Testing
-	// temp = tree.get_min(1, 1, n, 5, 6);
-	// printA(tree.t, 4 * n);
-	// print(temp);
-	// End Testing
-
-	// because of recursion the data structure above will not work
-	// need to use loops instead
-	while (x--) {
-		cin >> flag >> r >> c;
-		// print(flag, r, c);
-		// update
-		if (flag == 1) {
-			tree.update(1, 1, n, r, c);
-		} else {
-			temp = tree.get_min(1, 1, n, r, c);
-			cout << temp << endl;
+	void build(sl start) {
+		for (sl i = start-1; i > 0; --i) {
+			// t[i<<1] = t[2*i]
+			// t[i<<1|1] = t[2*i + 1]
+			t[i] = combine(t[i<< 1], t[i<<1|1]);
 		}
 	}
 
+	void update(sl index, sl value) {
+		// the loop first sets the index with the new value
+		// then it iteratively goes up the tree (dividing by 2)
 
+		for (t[index += n] = value; index > 1; index >>= 1) {
+			// if p = left child, p^1 = right child
+			// if p = right child, p^1 = left child
+			t[index >> 1] = combine( t[index],t[index^1]);
+		}
+	}
 
+	// sum [l, r) meaning inclusive l, exclusive r
+	sl query(sl l, sl r) {
+		sl ret1 = m, ret2 = m; r++;
+		for (l += n, r+=n; l < r; l >>= 1, r>>=1) {
+			// check if l is odd
+			// if l is odd, then that means it is the RIGHT child of the parent
+			// if it is the RIGHT child of the parent, then we only include the child and not the parent
+			if (l&1) ret1 = combine(ret1, t[l++]);
+			if (r&1) ret2 = combine(ret2, t[--r]);
+		}
+		return combine(ret1, ret2);
+	}
+};
+
+/********************* Main method *********************/
+
+// done using iterative segment tree
+int main() {
+	sl n, x, r, c, flag;
+	cin >> n >> x;
+	segTreeIterative<500000> tree;
+	// remember, the placement of the values is dependent
+	// on initial tree size
+	for (int i = 1; i < n+1; i++) {
+		cin >> r;
+		// tree.t[i + n] = r;
+		tree.update(i, r);
+	}
+	// forward(8, i) {
+	// 	print(tree.t[i]);
+	// }
+	tree.build(n);
+	while(x--) {
+		cin >> flag >> r >> c;
+		if (flag == 1) {
+			tree.update(r, c);
+		} else {
+			cout << tree.query(r, c) << endl;
+		}
+	}
 
 }
+
+
+// This was done using RECURSIVE segment tree; too slow
+// int main() {
+// 	sl n, x, r, c, flag;
+// 	cin >> n >> x;
+// 	sl array[n+1];
+// 	memset(array, 0, sizeof array);
+// 	forward(n, i) {
+// 		cin >> array[i+1];
+// 	}
+
+// 	// for (const sl i: array) {
+// 	// 	cout << i << endl;
+// 	// }
+
+// 	segTree<100000> tree;
+// 	tree.build (array, 1, 1, n);
+// 	sl temp;
+// 	// Testing
+// 	// temp = tree.get_min(1, 1, n, 5, 6);
+// 	// printA(tree.t, 4 * n);
+// 	// print(temp);
+// 	// End Testing
+
+// 	// because of recursion the data structure above will not work
+// 	// need to use loops instead
+// 	while (x--) {
+// 		cin >> flag >> r >> c;
+// 		// print(flag, r, c);
+// 		// update
+// 		if (flag == 1) {
+// 			tree.update(1, 1, n, r, c);
+// 		} else {
+// 			temp = tree.get_min(1, 1, n, r, c);
+// 			cout << temp << endl;
+// 		}
+// 	}
+
+
+
+
+// }
 
 
 
