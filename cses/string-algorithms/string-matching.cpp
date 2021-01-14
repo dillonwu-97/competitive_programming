@@ -78,84 +78,134 @@ bool p2(ul x)
 }
 
 
+vector<ul> prefix(string s) {
+	ul n = s.size();
+	vector<ul> v(n);
 
-/********************* Main method *********************/
-// Attempt 4:
-// Try kmp algorithm
-
-
-// Attempt 3:
-// Need to use string matching algorithms (kmp alg) or rabin-karp?
-// rabin karp algorithm
-
-// rabin karp algorithm DOES NOT work; there are hash collisions for default
-// configurations
-vector<ul> rabinkarp (string const& s, string const& t) {
-	ul p = 53; // prime number closest to size of alphabet
-	// OBSERVATION: 1e9+7 and 1e9+9 can result in collisions
-	// ul m already specified to be 1e9+7
-	ul S = s.size(); // s is the string we are looking for
-	ul T = t.size(); // t is the string we are searching in
-
-	// p_pow is used for polynomial rolling hashing
-	// it contains all of the powers of 31
-	vector<ul> p_pow(max(S,T)); 
-	p_pow[0] = 1;
-	rloop(1, p_pow.size(), i) {
-		p_pow[i] = (p_pow[i-1] * p) % m;
-	}
-
-	// calculate vector for big string
-	// Q: why is this a vector?
-	vector<ul> h(T+1, 0);
-	forward(T, i) {
-		// ex. h[1] = 0 + (t[i] - 'a' + 1) * 1 = t[i] - 'a' + 1
-		h[i+1] = (h[i] + (t[i] - 'a' + 1) * p_pow[i]) % m;
-	}
-
-	// calculate rolling hash value for little string
-	ul h_s = 0;
-	forward(S, i) {
-		h_s = (h_s + (s[i] - 'a' + 1) * p_pow[i]) % m;
-	}
-
-	// printV(h);
-	// print(h_s);
-	// occurences vector contains all of the starts of indices
-	// where there is a string s in t
-	vector<ul> occurences;
-	for (ul i = 0; i + S - 1 < T; i++) {
-		ul cur_h = (h[i+S] + m - h[i]) % m;
-		// print(i, cur_h);
-		if (cur_h == h_s * p_pow[i] % m) {
-			occurences.push_back(i);
+	// iterate through the string starting from second letter
+	for (ul i = 1; i < n; i++) {
+		ul j = v[i-1];
+		while(j > 0 && s[i]!=s[j]) {
+			j = v[j-1];
 		}
+		if (s[i] == s[j]) {
+			j++;
+		}
+		v[i] = j;
 	}
-	return occurences;
-	    
-
+	return v;
 }
 
+// /********************* Main method *********************/
+// // Attempt 4:
+// // Try kmp algorithm
 int main() {
 	string s;
 	string find;
 	cin >> s >> find;
 
-	vector<ul> ret = rabinkarp(find, s);
-	// cout << ret.size() << endl;
+	vector<ul> v = prefix(find);
+	// printV(v);
+	ul j= 0, i =0, ret = 0, flag =0;
 
-	// run a check
-	// a check takes too long if size of ret is too big
-	ul ret_count = 0;
-	for (ul i = 0; i < ret.size(); i++) {
-		if (find.compare(s.substr(ret[i], find.size())) == 0) {
-		// if (find == s.substr(ret[i], find.size())) {
-			ret_count +=1;
+	while (i < s.size()) {
+		// print(i, j);
+		flag = 0;
+		while(j < find.size() && find[j] == s[i]) {
+			i++;
+			j++;
+			flag = 1;
+		}
+		if (j == find.size()) {
+			ret ++;
+			j = v[j-1];
+		}
+		if (j > 0 && find[j] != s[i]) {
+			j-=1;
+		}
+		if (j == 0 && flag == 0) {
+			i+=1;
 		}
 	}
-	print(ret_count);
-
+	print(ret);
+	
 }
+
+
+
+
+
+// Attempt 3:
+// rabin karp algorithm
+// rabin karp algorithm DOES NOT WORK SOMETIMES; 
+// there are hash collisions for certain strings
+// vector<ul> rabinkarp (string const& s, string const& t) {
+// 	ul p = 53; // prime number closest to size of alphabet
+// 	// OBSERVATION: 1e9+7 and 1e9+9 can result in collisions
+// 	// ul m already specified to be 1e9+7
+// 	ul S = s.size(); // s is the string we are looking for
+// 	ul T = t.size(); // t is the string we are searching in
+
+// 	// p_pow is used for polynomial rolling hashing
+// 	// it contains all of the powers of 31
+// 	vector<ul> p_pow(max(S,T)); 
+// 	p_pow[0] = 1;
+// 	rloop(1, p_pow.size(), i) {
+// 		p_pow[i] = (p_pow[i-1] * p) % m;
+// 	}
+
+// 	// calculate vector for big string
+// 	// Q: why is this a vector?
+// 	vector<ul> h(T+1, 0);
+// 	forward(T, i) {
+// 		// ex. h[1] = 0 + (t[i] - 'a' + 1) * 1 = t[i] - 'a' + 1
+// 		h[i+1] = (h[i] + (t[i] - 'a' + 1) * p_pow[i]) % m;
+// 	}
+
+// 	// calculate rolling hash value for little string
+// 	ul h_s = 0;
+// 	forward(S, i) {
+// 		h_s = (h_s + (s[i] - 'a' + 1) * p_pow[i]) % m;
+// 	}
+
+// 	// printV(h);
+// 	// print(h_s);
+// 	// occurences vector contains all of the starts of indices
+// 	// where there is a string s in t
+// 	vector<ul> occurences;
+// 	for (ul i = 0; i + S - 1 < T; i++) {
+// 		ul cur_h = (h[i+S] + m - h[i]) % m;
+// 		// print(i, cur_h);
+// 		if (cur_h == h_s * p_pow[i] % m) {
+// 			occurences.push_back(i);
+// 		}
+// 	}
+// 	return occurences;
+	    
+
+// }
+
+// int main() {
+// 	string s;
+// 	string find;
+// 	cin >> s >> find;
+
+// 	vector<ul> ret = rabinkarp(find, s);
+// 	print(ret.size());
+// 	// cout << ret.size() << endl;
+
+// 	// run a check
+// 	// a check takes too long if size of ret is too big
+// 	// ul ret_count = 0;
+// 	// for (ul i = 0; i < ret.size(); i++) {
+// 	// 	if (find.compare(s.substr(ret[i], find.size())) == 0) {
+// 	// 	// if (find == s.substr(ret[i], find.size())) {
+// 	// 		ret_count +=1;
+// 	// 	}
+// 	// }
+// 	// print(ret_count);
+
+// }
 
 
 
