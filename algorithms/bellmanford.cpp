@@ -38,6 +38,7 @@ template<sl SZ> struct BellmanFord {
 			// check for bad edges
 			// if the next val is greater than the prev val + weight, then bad
 			// because it means that there were negative cycles
+			// this works because we loop through all the edges, so d[j.a] > d[j.b] but in a cycle, d[j.a] < d[j.b] will also be checked and there can't be a contradiction
 			if (d[j.a] > NINF) {
 				if (d[j.b] < d[j.a] + j.w) {bad[j.b] = 1;}
 			}
