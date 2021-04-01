@@ -37,7 +37,7 @@ def get_code(driver, redirect, name, language):
 		"ruby": '.rb'
 	}
 	ext = languages.get(language, '.txt') # .txt is default 
-	with open('./leetcode/' + name + ext, 'w') as f:
+	with open('../leetcode/' + name + ext, 'w') as f:
 		f.write(code.text)
 
 def main():
@@ -48,8 +48,8 @@ def main():
 	# args = parser.parse_args()
 
 	# create a folder for all leetcode problems
-	if not os.path.exists("leetcode"):
-		os.makedirs("leetcode")
+	# if not os.path.exists("leetcode"):
+	# 	os.makedirs("leetcode")
 
 	# create a json file that stores information about the problems that we've already seen when this script was run previously
 	if not os.path.exists("visited.json"):
@@ -99,7 +99,8 @@ def main():
 	page_num = 1
 	count = 0 # keep track of number of solved problems for debugging purposes
 	ttl = 15 # time to live value so that if ttl ever reaches 0, then assume we have run out of submissions (or there is some bug)
-	while True: 
+	flag = 1
+	while flag == 1: 
 		try:
 			driver.get(submissions_url + str(page_num))
 			page = driver.page_source # get the webpage
@@ -121,15 +122,18 @@ def main():
 				accepted = all_cols[2] # get the accepted 
 				language = all_cols[4].text
 				# if we have not seen this problem before and it is accepted
+
+				# we hit something that is in the json file meaning we already have the solution for the code 
+				if name in past_problems:
+					flag = 0
+					break
+
 				if name not in visited and accepted.text == 'Accepted':
 					visited[name] = 1
 					redirect = accepted.find('a').get('href')
 					get_code(driver, redirect, name, language)
 					count+=1 	
 				
-				# we hit something that is in the json file meaning we already have the solution for the code 
-				if name in past_problems:
-					break
 				
 			ttl = 15
 			print("page " + str(page_num) + " done")	
