@@ -47,5 +47,5 @@ class Solution(object):
                         current.pop()
                         visited[temp] = 0
                         sol.append(temp)
-                            sol = list(dict.fromkeys(sol))
+                        sol = list(dict.fromkeys(sol))
         return sol
