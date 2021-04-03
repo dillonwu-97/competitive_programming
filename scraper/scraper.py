@@ -1,6 +1,7 @@
 import time
 import json
 import pickle
+from mycookie import cookies
 
 from bs4 import BeautifulSoup
 
@@ -89,7 +90,6 @@ def main():
 	# Get the cookies from the site
 	# cookies = driver.get_cookies()
 	# print(cookies)
-	cookies = [{'domain': '.leetcode.com', 'expiry': 1616954810, 'httpOnly': False, 'name': '_gat', 'path': '/', 'secure': False, 'value': '1'}, {'domain': '.leetcode.com', 'httpOnly': True, 'name': 'messages', 'path': '/', 'sameSite': 'Lax', 'secure': True, 'value': '"127a22f8aaedc660c16aaa730717c980435557b7$[[\\"__json_message\\"\\0540\\05425\\054\\"Successfully signed in as DetectivePikachu.\\"]]"'}, {'domain': 'leetcode.com', 'expiry': 1648404351, 'httpOnly': False, 'name': 'csrftoken', 'path': '/', 'sameSite': 'Lax', 'secure': True, 'value': 'y6YM7uH1VNzVibtNtcDmr5mb8IGkKInKtJFPoXsb32yDRsvx3RZJOrmeBNbHGSEL'}, {'domain': '.leetcode.com', 'expiry': 1617041150, 'httpOnly': False, 'name': '_gid', 'path': '/', 'secure': False, 'value': 'GA1.2.1941550211.1616954690'}, {'domain': '.leetcode.com', 'expiry': 1618164349, 'httpOnly': True, 'name': 'LEETCODE_SESSION', 'path': '/', 'sameSite': 'Lax', 'secure': True, 'value': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMTQ4NjQ4MSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiZjE1MDk5ZTc4NTRhZjQ4NjBmMWU3NTAwYTQ4NjE1MmI2ZThjZDY4YSIsImlkIjoxNDg2NDgxLCJlbWFpbCI6ImRpbGxvbi53dUBlbW9yeS5lZHUiLCJ1c2VybmFtZSI6IkRldGVjdGl2ZVBpa2FjaHUiLCJ1c2VyX3NsdWciOiJEZXRlY3RpdmVQaWthY2h1IiwiYXZhdGFyIjoiaHR0cHM6Ly93d3cuZ3JhdmF0YXIuY29tL2F2YXRhci9lZGQ5MGM5ZWRkOWFjMWU5ODBiN2NmNTYyNjFhNmU2YS5wbmc_cz0yMDAiLCJyZWZyZXNoZWRfYXQiOjE2MTY5NTQ3NDksImlwIjoiMTA4LjI5LjE5MC4xNCIsImlkZW50aXR5IjoiM2RjZmUxOWQxZmVjZDcyNzMwMjc0ZGU0MjdiZmQ1NWYiLCJzZXNzaW9uX2lkIjo3NTk4MzYzLCJfc2Vzc2lvbl9leHBpcnkiOjEyMDk2MDB9.TJy51EUkvBFRJwqNqmhD-ntuqXStRVPTPK-cuVlfA4o'}, {'domain': '.leetcode.com', 'expiry': 1680026750, 'httpOnly': False, 'name': '_ga', 'path': '/', 'secure': False, 'value': 'GA1.2.779425684.1616954690'}, {'domain': '.leetcode.com', 'expiry': 1616956489, 'httpOnly': True, 'name': '__cf_bm', 'path': '/', 'sameSite': 'None', 'secure': True, 'value': '7d2c7c880568f1023696311e19b8739fa4b0c13a-1616954689-1800-AfmlZoeByTAhlRzNVvoCiscqKR6vIQJJpnK/UUb6HhVE1bq4ulGGzZjS/jGGPe0lo98r6Lfnr/b0oPBg6SXYUTQ='}, {'domain': '.leetcode.com', 'expiry': 1619546689, 'httpOnly': True, 'name': '__cfduid', 'path': '/', 'sameSite': 'Lax', 'secure': False, 'value': 'de4be27110f0138d7047150b28d3c63481616954689'}]
 	for c in cookies: 
 		driver.add_cookie(c)
 
