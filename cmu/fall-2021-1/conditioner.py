@@ -21,8 +21,16 @@ def main():
 		n = a[0]
 
 		ret = []
+
+		# trying 2 pointers
+		c = 0
+		x = 1
+		n_s = 1 	
+		
+
 		
 		# n^2 solution
+'''
 		for i in range(1,n+1):
 			s = -1 
 			for j in range(len(b)):
@@ -39,6 +47,7 @@ def main():
 			else:
 				print(str(ret[i]) + " ", end='')
 		
+'''
 			
 
 
