@@ -1,7 +1,6 @@
 import time
 import json
 import pickle
-from mycookie import cookies
 
 from bs4 import BeautifulSoup
 
@@ -23,9 +22,6 @@ def get_code(driver, redirect, name, language):
 	driver.get('https://leetcode.com' + redirect)
 
 	code = driver.find_element_by_class_name("ace_text-layer")
-	# print(code.text)
-	# print(name)
-	# print(language)
 	languages = {
 		"python3": '.py',
 		"cpp": '.cpp',
@@ -89,14 +85,6 @@ def main():
 	driver.find_element_by_id("signin_btn").click()
 	time.sleep(3)
 
-	# Get the cookies from the site
-	# cookies = driver.get_cookies()
-	# print(cookies)
-	# for c in cookies: 
-	# 	driver.add_cookie(c)
-
-	# time.sleep(10) # Let the user actually see something!
-
 	submissions_url = 'https://leetcode.com/submissions/#/'
 	page_num = 1
 	count = 0 # keep track of number of solved problems for debugging purposes
@@ -152,10 +140,6 @@ def main():
 	print("final count: ", count)
 	driver.quit()
 
-	# Take the most recently accepted submission
-	# if not os.path.exists("submitted_problems.json"):
-	# 	with open('submitted_problems.json', w) as f:
-	# 		json.dump(data, f)
 
 
 if __name__ == "__main__":
