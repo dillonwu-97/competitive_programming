@@ -1,5 +1,4 @@
-#include <vector>
-#include <set>
+#include <bits/stdc++.h>
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -101,6 +100,39 @@ bool p2(ul x)
 
 int main() {
 	ul n, x, r, c;
+	cin >> n;
+	string s;
+	while (n--) {
+		cin >> x;
+		cin >> s;
+		c = 0;
+		forward(x, i) {
+			if (s[i] == '0') {
+				c++;
+			}
+		}
+
+		// 1000 1001 1101 1011 1111
+		// 0 Alice loses
+		// 00 Alice loses
+		// 000 Alice wins
+		// 0000 Alice loses
+		// 00000 Alice wins
+		// 		A     B     A     B    A      B
+		// 00000 00100 10100 10101	11101 10111 11111
+		if (c == 0) {
+			print("DRAW");
+		}else if (c % 2 == 0 || c == 1) {
+			print("BOB");
+		} else if (c % 2 == 1) {
+			print("ALICE");
+		}
+	}
 }
+
+
+
+
+
 
 

@@ -101,6 +101,11 @@ bool p2(ul x)
 
 int main() {
 	ul n, x, r, c;
+	cin >> n;
+	while (n--) {
+		cin >> x;
+		
+	}
 }
 
 
