@@ -66,5 +66,39 @@ Output:
 
 Use verify [file] to test your solution and see how it does. When you are finished editing your code, use submit [file] to submit your answer. If your solution passes the test cases, it will be removed from your home folder.
 '''
-def solution():
+def solution(n):
+	a = bin(int(n))[2:][::-1]
+	count = 0
+	i = 0
+	
+	while (i < len(a)):
+		temp = 0
+		if a[i] == '1':
+			temp = 0
+			while (i < len(a) and a[i] == '1' ):
+				if i == len(a) - 1:
+					if temp > 0:
+						if temp == 1:
+							return count + temp + 1;
+						else:
+							return count + temp + 2;
+					else:
+						return count;	
+				temp += 1
+				i+=1
+			if temp != 1:
+				a = a[:i] + '1' + a[i+1:] # convert from '0' -> '1' if not the last
+			count += temp + 1
+		else:
+			while (i < len(a) and a[i] == '0'  ):
+				count += 1
+				i += 1
+
+	return count 
+
+print(solution('2080193948352450442442011401061206244388810931376389970099979679208467138393837292617102774682089829698971384777136032462368602450518509756581029441021'))
+print(solution('2152901187517739656201386993805303814751691651839392383217318456189714856585586004885382618326196940882737531523024153867405350577531291091825893542833'))
+print(solution('3'))
+print(solution('17'))
+print(solution('22'))
 	
