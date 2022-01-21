@@ -24,7 +24,7 @@ const ul m = 1e9+7;
 const ul INF= 1e18;
 
 // #define LIMIT 10000000001
-#define LIMIT 10000000
+#define LIMIT 31700000
 
 /********************* Print statements *********************/
 template <typename T> void print(T s) {
@@ -135,6 +135,8 @@ ul exp(ul a, ul b, ul mod) {
 	return ret;
 
 }
+
+// TODO: USE SEIVE WITH BETTER MEMORY COMPLEXITY
 vector<ul>primes;
 vector<char> table(LIMIT, 0);
 void seive() {
@@ -221,11 +223,21 @@ bool is_prime(ul n) {
 	return true;
 
 }
-
 vector<ul> solve(ul n) {
 	ul p;
 	vector<ul> ret;
-	while(!is_prime(n) && n!=1) {
+
+	// TODO: Do i need to do a primality test here or can I do without it?
+	while(1) {
+		if (n < LIMIT) {
+			if (table[n] == 0 || n == 1) {
+				break;
+			}
+		} else {
+			if (is_prime(n) == true) {
+				break;
+			}
+		}
 		while ((p = pollard_alg(n)) == 1) {
 			// print("p is ", p);
 		}
@@ -233,6 +245,22 @@ vector<ul> solve(ul n) {
 		ret.push_back(p);
 	}
 	ret.push_back(n);
+	return ret;
+
+}
+
+vector<ul> solve2(ul n) {
+	vector<ul> ret;
+	for (auto i: primes) {
+		while (n % i == 0) {
+			n/=i;
+			ret.push_back(i);
+		}
+		if (n == 1) {break;}
+	}
+	if (n > 1) {
+		ret.push_back(n);
+	}
 	return ret;
 
 }
@@ -253,8 +281,16 @@ int main() {
 		if (x == 0) {
 			break;
 		}
-		ret = solve(x);
+		/**************************************************************************************************************/
+		// the method of using seive with sqrt(n) primes, followed by rabin miller primality testing, and pollard algorithm is too slow
+		// so just use trial division instead
+		// ret = solve(x);
 		// printV(ret);
+		/**************************************************************************************************************/
+		// print("x is ", x);
+		ret = solve2(x);
+		// printV(ret);
+
 		ul count = 0;
 		ul prev = ret[0]; // random non prime number
 		for (ul i = 0; i < ret.size(); i++) {
