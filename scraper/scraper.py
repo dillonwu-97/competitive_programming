@@ -1,7 +1,6 @@
 import time
 import json
 import pickle
-from mycookie import cookies
 
 from bs4 import BeautifulSoup
 
@@ -23,9 +22,6 @@ def get_code(driver, redirect, name, language):
 	driver.get('https://leetcode.com' + redirect)
 
 	code = driver.find_element_by_class_name("ace_text-layer")
-	# print(code.text)
-	# print(name)
-	# print(language)
 	languages = {
 		"python3": '.py',
 		"cpp": '.cpp',
@@ -43,10 +39,10 @@ def get_code(driver, redirect, name, language):
 
 def main():
 
-	# parser = argparse.ArgumentParser()
-	# parser.add_argument("-u", "--username", help="Enter username", required=True)
-	# parser.add_argument("-p", "--password", help="Enter password", required=True)
-	# args = parser.parse_args()
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-u", "--username", help="Enter username", required=True)
+	parser.add_argument("-p", "--password", help="Enter password", required=True)
+	args = parser.parse_args()
 
 	# create a folder for all leetcode problems
 	# if not os.path.exists("leetcode"):
@@ -69,13 +65,13 @@ def main():
 
 	login_url = 'https://leetcode.com/accounts/login/'
 
-	# user = args.username
-	# password = args.password
+	user = args.username
+	password = args.password
 
 	# Use headless in order to reduce memory overhead when running Chrome
 	# Note: headless makes the window not appear
 	chrome_opts = webdriver.ChromeOptions()
-	chrome_opts.add_argument("--headless")
+	# chrome_opts.add_argument("--headless")
 	# chrome_opts.add_experimental_option("detach", True) # use this option to keep the window open
 
 	# Go to the webpage
@@ -83,17 +79,11 @@ def main():
 	driver.get(login_url);
 
 	# Log in to the site
-	# driver.find_element_by_id("id_login").send_keys(user)
-	# driver.find_element_by_id("id_password").send_keys(password)
-	# driver.find_element_by_id("signin_btn").click()
-
-	# Get the cookies from the site
-	# cookies = driver.get_cookies()
-	# print(cookies)
-	for c in cookies: 
-		driver.add_cookie(c)
-
-	# time.sleep(10) # Let the user actually see something!
+	driver.find_element_by_id("id_login").send_keys(user)
+	driver.find_element_by_id("id_password").send_keys(password)
+	time.sleep(3)
+	driver.find_element_by_id("signin_btn").click()
+	time.sleep(3)
 
 	submissions_url = 'https://leetcode.com/submissions/#/'
 	page_num = 1
@@ -150,10 +140,6 @@ def main():
 	print("final count: ", count)
 	driver.quit()
 
-	# Take the most recently accepted submission
-	# if not os.path.exists("submitted_problems.json"):
-	# 	with open('submitted_problems.json', w) as f:
-	# 		json.dump(data, f)
 
 
 if __name__ == "__main__":
