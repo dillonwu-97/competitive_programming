@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
 
 import os
 
@@ -16,6 +17,8 @@ from collections import Counter
 
 import argparse
 
+
+# TODO: Bug: If I redo a problem, any new problem done before that will not be counted
 
 def get_code(driver, redirect, name, language):
 	print(redirect)
@@ -75,8 +78,8 @@ def main():
 	# chrome_opts.add_experimental_option("detach", True) # use this option to keep the window open
 
 	# Go to the webpage
-	driver = webdriver.Chrome('./chromedriver', options = chrome_opts)  # Optional argument, if not specified will search path.
-	driver.get(login_url);
+	driver = webdriver.Chrome(ChromeDriverManager().install(), options = chrome_opts)  # Optional argument, if not specified will search path.
+	driver.get(login_url)
 
 	# Log in to the site
 	driver.find_element_by_id("id_login").send_keys(user)
@@ -93,19 +96,22 @@ def main():
 	while flag == 1: 
 		try:
 			driver.get(submissions_url + str(page_num))
+			time.sleep(1)
 			page = driver.page_source # get the webpage
 			html = BeautifulSoup(page, features="html.parser") # transform the webpage into html
+			print(html)
 			table = html.find("table", {"class":"table table-striped table-bordered table-hover"})
 			if table == None:
+				input()
 				ttl -= 1
 				time.sleep(2)
 				if ttl == 0: break
 				continue
 			all_rows = table.findAll(lambda tag: tag.name=="tr")
 			for row in all_rows:
+		
 				all_cols = row.findAll(lambda tag: tag.name=="td")
 				# print("all the columns", all_cols)
-				# print("all the rows", row)
 				if (len(all_cols) == 0): 
 					continue
 				name = all_cols[1].text[1:].lower().replace(" ", "-")[:-1] # get the name of the problem with some formatting
