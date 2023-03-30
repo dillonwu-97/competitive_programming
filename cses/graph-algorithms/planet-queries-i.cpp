@@ -1,4 +1,66 @@
 #include <vector>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <string>
+#include <queue>
+ 
+#define ul unsigned long long
+#define sl signed long long
+# define pii pair<int, int>
+#define f first
+#define s second
+ 
+#define aloop(b, a) for (auto &a: b)
+#define rloop(a, b, i) for (int i = a; i < b; i++)
+#define forward(a, i) for (int i = 0; i < a; i++)
+#define backward(b, i) for (int i = b-1; i >= 0; i--)
+ 
+using namespace std;
+const ul m = 1e9+7;
+const ul INF= 1e18;
+
+/********************* Main method *********************/
+// need to do binary lifting
+ul table[2000001][31];
+// ul table[10][30];
+int main() {
+ 	ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+	ul n, q, r, c;
+	cin >> n >> q;
+	// for each planet
+	forward(n, i) {
+		cin >> r;
+		// travel through 0 teleporters
+		table[i+1][0] = i+1;
+		// travel through 1 teleporter
+		table[i+1][1] = r;
+	}
+	rloop(2, 31, i) {
+		rloop(1, n+1, j) {
+			table[j][i] = table[ table[j][i-1] ][i-1];
+		}
+	}
+	// printAA(table, 10, 10);
+	while(q--) {
+		cin >> r >> c; // r = start, c = traversals necessary
+		// print("size is ", d.size(), r);
+		for (sl i = 31; i > 0; i--) {
+			// if the bit is set
+			if (c & (1<< (i-1))) {
+				// print("bit change is ", 1<<(i-1));
+				r = table[r][ i ];
+			}
+		}
+        cout << r << '\n';
+	}
+}
+
+
+
+/*
+#include <vector>
 #include <stack>
 #include <set>
 #include <iostream>
@@ -24,7 +86,6 @@ const ul INF= 1e18;
 #define VISITING 200050
 #define VISITED 200051
 
-/********************* Print statements *********************/
 template <typename T> void print(T s) {
 	cout << s << endl;
 }
@@ -89,7 +150,6 @@ template<typename T> void printAA(const T (&a), int N, int M) {
 
 }
 
-/********************* Common functions *********************/
 
 template <typename T> T abs(T n) {
 	return n < 0? n * -1 : n; 
@@ -100,7 +160,6 @@ bool p2(ul x)
     return (x & (x - 1)) == 0;
 }
 
-/********************* Mainzajmethod *********************/
 sl lift(vector<vector<sl>> &v, sl r, sl c) {
     // for each bit from the most significant to the least significant
     // Check if it is flipped
@@ -197,11 +256,9 @@ int main() {
         }
     }
     
-    /*
     for (int i =0; i< v.size(); i++) {
         printV(v[i]);
     }
-    */
 
     // Do binary lifting to examine the value at the nth position for some given value
     // r = start
@@ -228,3 +285,4 @@ int main() {
         print(r);
     }
 }
+*/
