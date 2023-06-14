@@ -18,15 +18,6 @@ template<typename T> void printV(vector<T> v) {
 	cout << endl;
 }
  
-// 48 - len = number of steps / degrees of freedom i have left
-// (6-x) + (y-0) = number of steps i still need
-bool calculate(sl x, sl y, sl len) {
-    if ( (6 - x) + (y - 0) > (48 - len)) {
-        return false;
-    }
-    return true;
-}
- 
 bool checkbounds(sl x, sl y) {
     if (x >= 0 && x <= 6 && y >= 0 && y<= 6) {
         return true;
@@ -55,12 +46,8 @@ bool check_row() {
     return true;
 }
  
-// Optimizations:
-// If position[i] is different from to_find[i], immediately stop this path
-// this is also dfs, so once a path is pruned, I can immediately 
- 
 void generate_paths(sl x, sl y, vector<char> &to_find, vector<char> &cur_path, sl len) {
-    if (x == 6 && y == 0 && len == 48) {
+    if (len == 48 && x == 6 && y == 0) {
         counter ++;
     } else {
         sl newx, newy;
@@ -99,14 +86,6 @@ void generate_paths(sl x, sl y, vector<char> &to_find, vector<char> &cur_path, s
             if (checkbounds(newx, newy) && visited[newx][newy] == 0) {
                 // count number of steps lookahead
                 // if there are not enough steps left to reach the end in the shortest route, terminate
-                
-                
-                
-                if (len > 40 && calculate(x, y, len) == false) {
-                    return;
-                }
-                
-                
                 
                 // if all the optimization checks pass, check this route and backtrack if it fails
                 visited[newx][newy] = 1;
