@@ -10,7 +10,7 @@ sl xdir[4] = {-1, 1, 0, 0};
 sl ydir[4] = {0, 0, 1, -1};
 char lett[4] = {'U', 'D', 'R', 'L'};
  
-vector<vector<sl>> visited(7, vector<sl>(7, 0));
+vector<vector<sl>> visited(9, vector<sl>(9, 0));
 template<typename T> void printV(vector<T> v) {
 	for (const auto & i: v) {
 		cout << i << " ";
@@ -18,19 +18,11 @@ template<typename T> void printV(vector<T> v) {
 	cout << endl;
 }
  
-bool checkbounds(sl x, sl y) {
-    if (x >= 0 && x <= 6 && y >= 0 && y<= 6) {
-        return true;
-    } else {
-        return false;
-    }
-}
- 
 sl counter = 0;
  
 bool check_col(){
     for (sl i = 0; i < 7; i++) {
-        if (visited[i][6] == 0) {
+        if (visited[i+1][7] == 0) {
             return false;
         }
     }
@@ -39,7 +31,7 @@ bool check_col(){
  
 bool check_row() {
     for (sl i = 0; i < 7; i++) {
-        if (visited[0][i] == 0) {
+        if (visited[1][i+1] == 0) {
             return false;
         }
     }
@@ -47,34 +39,38 @@ bool check_row() {
 }
  
 void generate_paths(sl x, sl y, vector<char> &to_find, vector<char> &cur_path, sl len) {
-    if (len == 48 && x == 6 && y == 0) {
+    if (len == 48 && x == 7 && y == 1) {
         counter ++;
     } else {
         sl newx, newy;
-
         // optimization 2: if we are too early
-        if (len != 47 && x == 6 && y == 0) {
+        if (x == 7 && y == 1) {
+            return;
+        }
+
+        // Special case of hitting real wall
+//        if (x == 7 && y < 7 && visited[x][y-1] == 0 && visited[x][y+1] == 0) {
+//
+//      Special case of hitting artificial wall
+ 
+        if (visited[x+1][y] == 1 && visited[x-1][y] == 1 && visited[x][y-1] == 0 && visited[x][y+1] == 0) {
+            return;
+        }
+
+
+        if (visited[x][y+1] == 1 && visited[x][y-1] == 1 && visited[x-1][y] == 0 && visited[x+1][y] == 0) {
             return;
         }
         
         // optimization 3:
-        if (x == 6 && check_col() == false) {
+        if (x == 7 && !check_col()) {
             return;
         }
         
-        if (y == 6 && check_row() == false) {
+        if (y == 7 && !check_row()) {
             return;
         }
-
-        if (x == 6 && y < 6 && visited[x][y-1] == 0 && visited[x][y+1] == 0) {
-            return;
-        }
-
-        if (y == 6 && x < 6 && x > 0 && visited[x-1][y] == 0 && visited[x+1][y] == 0) {
-            return;
-        }
-
-
+        
         for (sl i = 0; i < 4; i++) {
             newx = x + xdir[i];
             newy = y + ydir[i];
@@ -83,7 +79,7 @@ void generate_paths(sl x, sl y, vector<char> &to_find, vector<char> &cur_path, s
             if (to_find[len] != '?' && to_find[len] != lett[i]) {
                 continue;
             }
-            if (checkbounds(newx, newy) && visited[newx][newy] == 0) {
+            if (visited[newx][newy] == 0) {
                 // count number of steps lookahead
                 // if there are not enough steps left to reach the end in the shortest route, terminate
                 
@@ -104,10 +100,16 @@ void generate_paths(sl x, sl y, vector<char> &to_find, vector<char> &cur_path, s
 int main() {
     string s;
     cin >> s;
+    for (sl i = 0; i < 9; i++) {
+        visited[0][i] = 1;
+        visited[i][0] = 1;
+        visited[i][8] = 1;
+        visited[8][i] = 1;
+    }
     vector<char>to_find(s.begin(), s.end());
-    visited[0][0] = 1;
+    visited[1][1] = 1;
     vector<char> cur_path;
-    generate_paths(0, 0, to_find, cur_path, 0);
+    generate_paths(1, 1, to_find, cur_path, 0);
     cout << counter << endl;
  
     return 0;
