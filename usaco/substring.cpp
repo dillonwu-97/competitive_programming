@@ -13,19 +13,19 @@ using namespace std;
 #define ul unsigned long long
 #define sl signed long long
 /********************* Print statements *********************/
-template <typename T> void print(T s) {
+template <typename T> void p(T s) {
 	cout << s << endl;
 }
 
-template <typename T, typename T2> void print(T s, T2 s2) {
+template <typename T, typename T2> void p(T s, T2 s2) {
 	cout << s << " " << s2 << endl;
 }
 
-template <typename T, typename T2, typename T3> void print(T s, T2 s2, T3 s3) {
+template <typename T, typename T2, typename T3> void p(T s, T2 s2, T3 s3) {
 	cout << s << " " << s2 << " " << s3 << endl;
 }
 
-template <typename T, typename T2, typename T3, typename T4> void print(T s, T2 s2, T3 s3, T4 s4) {
+template <typename T, typename T2, typename T3, typename T4> void p(T s, T2 s2, T3 s3, T4 s4) {
 	cout << s << " " << s2 << " " << s3 << " " << s4 << endl;
 }
 
@@ -36,78 +36,62 @@ template<typename T> void printV(vector<T> v) {
 	cout << endl;
 }
 
-// TODO: Add cycle detection
-bool flag1 = 0;
-void dfs1(vector<vector<sl>> &g, vector<sl> &visited, vector<sl> &order, sl node) {
-    for (auto i: g[node]) {
-        // cycle detected
-        if (visited[i] == 1) {
-            print(-1);
-            flag1 = 1;
-            return;
-        }
-        if (visited[i] == 0) {
-            visited[i] = 1;
-            dfs1(g, visited, order, i);
-        }
-    }
-    visited[node] = 2;
-    order.push_back(node);
-}
-
-sl max_val = 0;
-void dfs2(vector<vector<sl>> &g, vector<sl> &visited, vector<sl> &alph, string s, sl node) {
-    sl c = s[node] - 97;
-    alph[ c ] ++;
-    //print("val is: ",  node, s[node] , alph[c]);
-    if (alph[ c ] > max_val) {
-        max_val = alph[ c ];
-    }
-    
-    for (auto i: g[node]) {
-        if (visited[i] == 0) {
-            visited[i] = 1;
-            dfs2(g, visited, alph, s, i);
-        }
-    }
-
-    alph[ c ] --;
-}
-
 /********************* Main method *********************/
 // If a cycle is found, return -1
+// The method doing dfs twice is too slow, need to use dp instead
 int main() {
     sl n, m, a, b;
     string s;
     cin >> n >> m;
     cin >> s;
+    s = " " + s;
+    vector<vector<sl>> table(n+1, vector<sl>(26, 0));
     vector<vector<sl>> g(n+1, vector<sl>());
+    vector<sl> deg(n+1, 0);
     while (m--) {
         cin >> a >> b; 
         g[a].push_back(b);
+        deg[b] ++;
     }
-    s = " " + s;
-    vector<sl> visited(n+1, 0);
-    vector<sl> order;
-    for (sl i = 1; i < g.size(); i++) {
-        if (visited[i] == 0) {
-            visited[i] = 1;
-            dfs1(g, visited, order, i);
-            if (flag1 == 1) {return 0;}
+    queue<sl> q;
+    for (sl i = 1; i < deg.size(); i++) {
+        if (deg[i] == 0)
+            q.push(i);
+    }
+    sl out, c;
+    sl cnt = 0;
+    while (q.size() > 0) {
+        cnt ++;
+        if (cnt > n) {
+            p(-1);
+            return 0;
         }
-    }
-    reverse(order.begin(), order.end());
-    //printV(order);
-    fill(visited.begin(), visited.end(), 0);
+        out = q.front(); q.pop();
+        c = s[out] - 97;
+        table[out][c] += 1;
+        for (auto i : g[out]) {
+            deg[i]--;
+            if (deg[i] == 0) 
+                q.push(i);
 
-    vector<sl> alph(30, 0);
-    for (auto i: order) {
-        if (visited[i] == 0) {
-            visited[i] = 1;
-            dfs2(g, visited, alph, s, i);
+            // update the values in this node with the max values
+            for (sl j = 0; j < 26; j++) {
+                table[i][j] = max(table[i][j], table[out][j]);
+            }
+            
         }
     }
-    print(max_val);
+    if (cnt != n) {
+        p(-1);
+        return 0;
+    }
+    sl ret = 0;
+    for (auto i: table) {
+        for (auto j: i) {
+            ret = max(j, ret);
+        }
+    }
+    p(ret);
 }
 
 
