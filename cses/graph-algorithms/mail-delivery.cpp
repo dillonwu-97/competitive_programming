@@ -51,6 +51,54 @@ template<typename T> void pV(vector<T> v) {
 }
 
 /********************* Main method *********************/
+int main() {
+    // visited stores the index into the edge
+    sl n, m, a, b;
+    cin >> n >> m;
+    v<v<pii>> g(n+1, v<pii>());
+    v<bool> visited(m+1);
+    f1(m, i) {
+        cin >> a >> b;
+        g[a].pb({b,i});
+        g[b].pb({a,i});
+    }
+    stack<sl> s;
+    v<sl> ret;
+    s.push(1);
+    sl out, check;
+    pii cur;
+    f2(1,n+1, i) {
+        if (g[i].size() & 1) {
+            p("IMPOSSIBLE");
+            return 0;
+        }
+    }
+    while (s.size()) {
+        out = s.top(); check = 0; // check is used to check if there are still more nodes that need to be visited
+        while (g[out].size()) {
+            cur = g[out].back(); g[out].pop_back(); 
+            if (visited[cur.s] == 0) {
+                visited[cur.s] = 1;
+                s.push(cur.f);
+                check = 1;
+                break;
+            }
+        }
+        // ret is 0, so there is nothing left 
+        if (check == 0) {
+            ret.pb(out);
+            s.pop();
+        }
+    }
+
+    if (ret.size() != m+1) {
+        p("IMPOSSIBLE");
+    }
+    pV(ret);
+    return 0;
+}
+
+/*
 v<sl> ret;
 void dfs(v<v<pii>> &g, v<v<sl>> &visited, v<sl> &deg, sl node) {
     //p(node);
@@ -90,13 +138,11 @@ int main() {
         deg[b]++;
     }
     
-    /*
     for (sl i = 1; i < g.size(); i++) {
         for (auto j: g[i]) {
             p(i, j.f, j.s);
         }
     }
-    */
     
     // Double check that this is a valid graph first of all
     f2(1, n+1, i) {
@@ -118,5 +164,4 @@ int main() {
     pV(ret);
 
 }
-
-
+*/
